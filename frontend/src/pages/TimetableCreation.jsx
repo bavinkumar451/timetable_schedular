@@ -1,41 +1,70 @@
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import TimetableTable from "../components/TimetableTable";
 import SubjectSelector from "../components/SubjectSelector";
+import TimetableTable from "../components/TimetableTable";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Cpu } from "lucide-react";
 
+const periods = [
+  "9:00 - 9:50",
+  "10:00 - 10:50",
+  "11:00 - 11:50",
+  "12:00 - 12:50",
+  "1:00 - 1:50",
+  "2:00 - 2:50",
+  "3:00 - 3:50",
+  "4:00 - 4:50",
+];
+
+const initialTimetable = {
+  Monday: Object.fromEntries(periods.map((p) => [p, null])),
+  Tuesday: Object.fromEntries(periods.map((p) => [p, null])),
+  Wednesday: Object.fromEntries(periods.map((p) => [p, null])),
+  Thursday: Object.fromEntries(periods.map((p) => [p, null])),
+  Friday: Object.fromEntries(periods.map((p) => [p, null])),
+};
+
 export default function TimetableCreation() {
   const [subjects] = useState(["DBMS", "AI", "OS", "Networks"]);
-  const initial = {
-    Monday: [],
-    Tuesday: [],
-    Wednesday: [],
-    Thursday: [],
-    Friday: [],
-  };
-  const [timetable, setTimetable] = useState(initial);
+  const [timetable, setTimetable] = useState(initialTimetable);
+  const [showRuleBox, setShowRuleBox] = useState(false);
+  const [rules, setRules] = useState("");
 
-  const addToDay = (subject, day = "Monday") => {
+  // Add class to a specific day and period
+  const addClass = (
+    subject,
+    day = "Monday",
+    period = periods[0],
+    faculty = "TBD"
+  ) => {
     setTimetable((prev) => ({
       ...prev,
-      [day]: [...prev[day], { subject, faculty: "TBD", time: "10:00 - 11:00" }],
+      [day]: {
+        ...prev[day],
+        [period]: { subject, faculty },
+      },
     }));
   };
 
+  // Auto-generate timetable (simple round-robin allocation)
   const autoGenerate = () => {
-    const gen = { ...initial };
-    const days = Object.keys(gen);
+    const newTimetable = { ...initialTimetable };
+    const days = Object.keys(newTimetable);
+
     subjects.forEach((s, i) => {
       const day = days[i % days.length];
-      gen[day].push({
-        subject: s,
-        faculty: "Auto",
-        time: `${9 + (i % 3)}:00 - ${10 + (i % 3)}:00`,
-      });
+      const period = periods[i % periods.length];
+      newTimetable[day][period] = { subject: s, faculty: "Auto" };
     });
-    setTimetable(gen);
+
+    setTimetable(newTimetable);
+  };
+
+  // Generate timetable using rules (placeholder for AI logic)
+  const generateWithRules = () => {
+    alert(`Generating timetable using rules:\n${rules}`);
+    setShowRuleBox(false);
   };
 
   return (
@@ -58,12 +87,13 @@ export default function TimetableCreation() {
               </h3>
             </div>
             <p className="text-gray-500 mb-4 text-sm">
-              Select subjects and allocate them to Monday (you can auto-generate
-              for all days).
+              Select subjects and allocate them to periods. You can also define
+              rules for AI generation.
             </p>
+
             <SubjectSelector
               subjects={subjects}
-              onAdd={(s) => addToDay(s, "Monday")}
+              onAdd={(s) => addClass(s, "Monday", periods[0])}
             />
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -73,6 +103,15 @@ export default function TimetableCreation() {
               >
                 Generate Timetable (AI)
               </button>
+
+              {/* Add Rule Button */}
+              <button
+                className="px-5 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition"
+                onClick={() => setShowRuleBox((prev) => !prev)}
+              >
+                Add Rule
+              </button>
+
               <button
                 className="px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
                 onClick={() => alert("Save -> send to HOD (implement backend)")}
@@ -80,6 +119,25 @@ export default function TimetableCreation() {
                 Save & Send for Approval
               </button>
             </div>
+
+            {/* Rule Input Box */}
+            {showRuleBox && (
+              <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-inner">
+                <textarea
+                  value={rules}
+                  onChange={(e) => setRules(e.target.value)}
+                  placeholder="Enter rules for timetable generation..."
+                  className="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  rows={4}
+                />
+                <button
+                  className="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition"
+                  onClick={generateWithRules}
+                >
+                  Generate With Rules
+                </button>
+              </div>
+            )}
           </motion.div>
 
           {/* Generated Timetable */}
@@ -87,7 +145,7 @@ export default function TimetableCreation() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-lg p-6"
+            className="bg-white rounded-2xl shadow-lg p-6 overflow-x-auto"
           >
             <h3 className="text-xl font-semibold text-gray-800 mb-4">
               Generated Timetable
@@ -96,7 +154,7 @@ export default function TimetableCreation() {
               Timetable is updated in real-time. Review before sending for
               approval.
             </p>
-            <TimetableTable timetable={timetable} />
+            <TimetableTable timetable={timetable} periods={periods} />
           </motion.div>
         </main>
       </div>
