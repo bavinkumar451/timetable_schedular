@@ -22,7 +22,7 @@ export default function Navbar() {
             Timetable
           </Link>
           <Link to="/approval" className="hover:underline">
-            Approval
+            Manage Approval
           </Link>
         </nav>
       </div>

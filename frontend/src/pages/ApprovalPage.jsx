@@ -115,7 +115,7 @@ export default function ApprovalPage() {
           </motion.div>
 
           {/* Action Buttons */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -138,7 +138,7 @@ export default function ApprovalPage() {
                 <XCircle size={18} /> Reject
               </button>
             </div>
-          </motion.div>
+          </motion.div> */}
         </main>
       </div>
     </div>

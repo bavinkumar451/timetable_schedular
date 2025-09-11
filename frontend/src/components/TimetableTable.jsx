@@ -1,15 +1,10 @@
 import { motion } from "framer-motion";
 
-// Colors for subjects
-const subjectColors = {
-  DBMS: "bg-blue-400 text-white",
-  AI: "bg-purple-400 text-white",
-  OS: "bg-green-400 text-white",
-  Networks: "bg-yellow-400 text-white",
-  default: "bg-gray-200 text-gray-700",
-};
-
-export default function TimetableTable({ timetable, periods }) {
+export default function TimetableTable({
+  timetable,
+  periods,
+  subjectColorMap,
+}) {
   const days = Object.keys(timetable || {});
 
   return (
@@ -40,7 +35,7 @@ export default function TimetableTable({ timetable, periods }) {
               {periods.map((periodTime, pIdx) => {
                 const cls = timetable[day][periodTime];
                 const colorClass = cls
-                  ? subjectColors[cls.subject] || subjectColors.default
+                  ? subjectColorMap[cls.subject] || "bg-gray-200 text-gray-700"
                   : "bg-gray-100";
 
                 return (
@@ -51,7 +46,9 @@ export default function TimetableTable({ timetable, periods }) {
                     {cls ? (
                       <div className="flex flex-col text-xs font-semibold">
                         <span>{cls.subject}</span>
-                        <span className="font-normal">{cls.faculty}</span>
+                        {cls.faculty !== "-" && (
+                          <span className="font-normal">{cls.faculty}</span>
+                        )}
                       </div>
                     ) : (
                       <span className="text-gray-400 text-xs">—</span>

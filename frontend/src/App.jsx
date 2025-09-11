@@ -52,14 +52,14 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/mail"
         element={
           <ProtectedRoute isAllowed={!!user}>
             <MailPage />
           </ProtectedRoute>
         }
-      />
+      /> */}
 
       <Route
         path="*"

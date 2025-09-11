@@ -7,6 +7,7 @@ import {
   CheckCircle,
   Mail,
 } from "lucide-react";
+import timetableLogo from "../assets/logoTimeSchdular.PNG"
 
 export default function Sidebar() {
   const location = useLocation();
@@ -15,8 +16,8 @@ export default function Sidebar() {
     { to: "/home", label: "Dashboard", icon: LayoutDashboard },
     { to: "/timetable", label: "Create Timetable", icon: CalendarPlus },
     { to: "/update", label: "Update Timetable", icon: Edit3 },
-    { to: "/approval", label: "Approval", icon: CheckCircle },
-    { to: "/mail", label: "Mail Timetable", icon: Mail },
+    { to: "/approval", label: "Manage Approval", icon: CheckCircle },
+    // { to: "/mail", label: "Mail Timetable", icon: Mail },
   ];
 
   return (
@@ -27,8 +28,13 @@ export default function Sidebar() {
       className="w-64 bg-white border-r hidden md:flex flex-col shadow-lg"
     >
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-        <h2 className="font-bold text-xl">⏰ TimeSchedular</h2>
+      <div className="p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex flex-col items-center">
+        <img
+          src={timetableLogo}
+          alt="Timetable Logo"
+          className="w-16 h-16 mb-2 rounded-full border border-white shadow"
+        />
+        <h2 className="font-bold text-xl"> THULIYA</h2>
         <p className="text-sm text-indigo-100">Admin Panel</p>
       </div>
 
@@ -57,7 +63,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t text-xs text-gray-500">
+      <div className="p-4 border-t text-xs text-gray-500 text-center">
         © 2025 TimeSchedular
       </div>
     </motion.aside>
